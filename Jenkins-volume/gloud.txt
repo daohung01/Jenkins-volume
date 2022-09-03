@@ -1,0 +1,21 @@
+gcloud compute disks create --size=1GiB --zone=europe-west1-b mongodb
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mongodb
+spec:
+  containers:
+    - image: mongo
+      name: mongodb
+      ports:
+        - containerPort: 27017
+          protocol: TCP
+      volumeMounts:
+        - name: mongodb-data
+          mountPath: /data/db
+  volumes:
+    - name: mongodb-data
+      gcePersistentDisk: # google cloud disk volume
+        pdName: mongodb # name of the persistent disk on google cloud
+        fsType: ext4
